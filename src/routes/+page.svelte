@@ -1,3 +1,32 @@
+<script lang="ts">
+	import { products, type Product } from '../data/products.ts';
+
+	type CartItem = Product & { quantity: number };
+
+	let cart = $state<CartItem[]>([]);
+	let total = $derived(cart.reduce((acc, item) => acc + item.price * item.quantity, 0));
+
+	const addProduct = (product: Product) => {
+		const currentProd = cart.find((p) => p.id === product.id);
+		if (currentProd) {
+			currentProd.quantity += 1;
+		} else {
+			cart = [...cart, { ...product, quantity: 1 }];
+		}
+	};
+
+	const removeProduct = (id: number) => {
+		const currentProd = cart.find((p) => p.id === id);
+		if (currentProd) {
+			if (currentProd.quantity > 1) {
+				currentProd.quantity -= 1;
+			} else {
+				cart = cart.filter((p) => p.id !== id);
+			}
+		}
+	};
+</script>
+
 <div>
 	<h1>Fruit Shop</h1>
 
